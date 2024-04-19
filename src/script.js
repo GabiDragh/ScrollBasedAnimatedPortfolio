@@ -86,7 +86,7 @@ gradientTexture.magFilter = THREE.NearestFilter
 // }) 
 
 // INFO: Meshes
-const objectsDistance = 4.5 //distance between objects
+const objectsDistance = 4 //distance between objects
 
 const mesh1 = new THREE.Mesh(
     new THREE.TorusGeometry(1, 0.4, 16, 60),
