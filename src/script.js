@@ -7,19 +7,27 @@ import gsap from 'gsap'
  * Debug
  */
 const gui = new GUI()
-gui.close()
+gui.hide()
 
-const parameters = {
-    materialColor: '#ffeded'
-}
+// const parameters = {
+//     // materialColor: '#ffeded'
+// }
 
 gui
-    .addColor(parameters, 'materialColor')
+    // .addColor(parameters, 'materialColor')
     // INFO: Change the color material and particlesmaterial color in debug gui
     .onChange(() => {
-        material.color.set(parameters.materialColor),
+        // material.color.set(parameters.materialColor),
         particlesMaterial.color.set(parameters.materialColor)
     })
+
+    // EXTRA: Add button for GitHub profile
+
+    const githubButton = document.getElementById('github-button');
+
+    githubButton.addEventListener('click', () => {
+        window.location.href = 'https://github.com/GabiDragh';
+    });
 
 /**
  * Base
@@ -35,7 +43,34 @@ const scene = new THREE.Scene()
  */
 
 const textureLoader = new THREE.TextureLoader();
-const gradientTexture = textureLoader.load('./textures/gradients/3.jpg')
+
+// EXTRA: Objects texture changed
+
+const torusColorTexture = textureLoader.load('./textures/torus/color.jpg')
+const torusAmbientOcclusionTexture = textureLoader.load('./textures/torus/ambientOcclusion.jpg')
+const torusHeightTexture = textureLoader.load('./textures/torus/height.png')
+const torusNormalTexture = textureLoader.load('./textures/torus/normal.jpg')
+const torusRoughnessTexture = textureLoader.load('./textures/torus/roughness.jpg')
+
+torusColorTexture.colorSpace = THREE.SRGBColorSpace
+
+const coneColorTexture = textureLoader.load('./textures/cone/color.jpg')
+const coneAmbientOcclusionTexture = textureLoader.load('./textures/cone/ambientOcclusion.jpg')
+const coneHeightTexture = textureLoader.load('./textures/cone/height.png')
+const coneNormalTexture = textureLoader.load('./textures/cone/normal.jpg')
+const coneRoughnessTexture = textureLoader.load('./textures/cone/roughness.jpg')
+
+coneColorTexture.colorSpace = THREE.SRGBColorSpace
+
+const torusKnotColorTexture = textureLoader.load('./textures/torusKnot/color.jpg')
+const torusKnotAmbientOcclusionTexture = textureLoader.load('./textures/torusKnot/occ.jpg')
+const torusKnotDisplacementTexture = textureLoader.load('./textures/torusKnot/disp.png')
+const torusKnotNormalTexture = textureLoader.load('./textures/torusKnot/norm.jpg')
+const torusKnotRoughnessTexture = textureLoader.load('./textures/torusKnot/rough.jpg')
+
+torusKnotColorTexture.colorSpace = THREE.SRGBColorSpace
+
+const gradientTexture = textureLoader.load('./textures/gradients/5.jpg')
 gradientTexture.magFilter = THREE.NearestFilter
 
 /**
@@ -43,29 +78,68 @@ gradientTexture.magFilter = THREE.NearestFilter
  */
 
 // INFO: Material
-const material = new THREE.MeshToonMaterial({ //material appears only when there is light in the scene
-    color: parameters.materialColor,
-    gradientMap: gradientTexture //by default, webgl will try to merge the gradient colors, not do shading. This needs to be changed in settings with THREE.NearestFilter
+// const material = new THREE.MeshToonMaterial({ //material appears only when there is light in the scene
+//     color: parameters.materialColor,
+//     gradientMap: gradientTexture,//by default, webgl will try to merge the gradient colors, not do shading. This needs to be changed in settings with THREE.NearestFilter
+//     // wireframe: true 
     
-}) 
+// }) 
 
 // INFO: Meshes
-const objectsDistance = 4 //distance between objects
+const objectsDistance = 4.5 //distance between objects
 
 const mesh1 = new THREE.Mesh(
     new THREE.TorusGeometry(1, 0.4, 16, 60),
-    material
+    new THREE.MeshToonMaterial({ //material appears only when there is light in the scene
+        map: torusColorTexture,
+        // gradientMap: gradientTexture,//by default, webgl will try to merge the gradient colors, not do shading. This needs to be changed in settings with THREE.NearestFilter
+        aoMap:torusAmbientOcclusionTexture,
+        aoMapIntensity: 0.5,
+        displacementMap: torusHeightTexture,
+        displacementScale: 0.07,
+        normalMap: torusNormalTexture,
+        // roughnessMap: torusRoughnessTexture,
+        // roughness: 0.5,
+        transparent: true
+        // wireframe: true 
+    })
 )
 
 const mesh2 = new THREE.Mesh(
-    new THREE.ConeGeometry(1, 2, 32),
-    material
+    new THREE.ConeGeometry(1, 2),
+    new THREE.MeshStandardMaterial({ //material appears only when there is light in the scene
+        map: coneColorTexture,
+        // gradientMap: gradientTexture,//by default, webgl will try to merge the gradient colors, not do shading. This needs to be changed in settings with THREE.NearestFilter
+        aoMap:coneAmbientOcclusionTexture,
+        aoMapIntensity: 0.1,
+        displacementMap: coneHeightTexture,
+        displacementScale: 0.01,
+        normalMap: coneNormalTexture,
+        roughnessMap: coneRoughnessTexture,
+        roughness: 0.5,
+        transparent: true,
+        // wireframe: true 
+    })
 )
 
 const mesh3 = new THREE.Mesh(
-    new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16),
-    material
+    new THREE.TorusKnotGeometry(0.85, 0.33, 150, 10),
+    new THREE.MeshToonMaterial({ //material appears only when there is light in the scene
+        map: torusKnotColorTexture,
+        // gradientMap: gradientTexture,//by default, webgl will try to merge the gradient colors, not do shading. This needs to be changed in settings with THREE.NearestFilter
+        aoMap:torusKnotAmbientOcclusionTexture,
+        aoMapIntensity: 0.2,
+        displacementMap: torusKnotDisplacementTexture,
+        displacementScale: 0.01,
+        normalMap: torusKnotNormalTexture,
+        // roughnessMap: torusKnotRoughnessTexture,
+        // roughness: 0.5,
+        transparent: true,
+        wireframe: true 
+    })
 )
+
+
 
 mesh1.position.y = - objectsDistance * 0;
 mesh2.position.y = - objectsDistance * 1;
@@ -87,7 +161,7 @@ const sectionMeshes = [mesh1, mesh2, mesh3];
  */
 
 
-const particleCount = 200;
+const particleCount = 700;
 const positions = new Float32Array(particleCount * 3);
 
 for (let i = 0; i < particleCount; i++) {
@@ -100,11 +174,10 @@ const particlesGeometry = new THREE.BufferGeometry()
 particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
 
 const particlesMaterial = new THREE.PointsMaterial({
-    color: parameters.materialColor,
+    color: '#ffffff',
     sizeAttenuation: true,
-    size: 0.03,
+    size: 0.02,
     transparent: true,
-    
 })
 
 const particles = new THREE.Points(particlesGeometry, particlesMaterial);
@@ -175,11 +248,11 @@ window.addEventListener('scroll', () => {
     scrollY = window.scrollY;
     // console.log(scrollY / sizes.height)
     const newSection = Math.round(scrollY / sizes.height);
-    console.log(newSection)
+    // console.log(newSection)
 
     if (newSection != currentSection) { //new section is diff current section
         currentSection = newSection 
-        console.log('changed', currentSection)
+        // console.log('changed', currentSection)
         gsap.to(
             sectionMeshes[currentSection].rotation,
             {

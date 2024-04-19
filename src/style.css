@@ -6,7 +6,8 @@
 
 html 
 {
-    background: #1e1a20
+    
+    background: #0c0111
 }
 
 /* html,
@@ -27,18 +28,38 @@ body
 .section
 {
     display: flex;
+    flex-direction: row-reverse;
     align-items: center;
     height: 100vh;
     position: relative;
     font-family: 'Cabin', sans-serif;
     color: #ffeded;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
     font-size: 7vmin;
-    padding-left: 10%;
-    padding-right: 10%;
+    padding-left: 6%;
+    padding-right: 6%;
 }
 
 section:nth-child(odd)
 {
     justify-content: flex-end;
+}
+
+#github-button {
+    position: fixed;
+    top: 20px; 
+    right: 20px; 
+    z-index: 100; 
+    background-color: transparent;
+    color: white;
+    border: 2px solid white; 
+    border-radius: 20px; 
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s; 
+}
+
+#github-button:hover {
+    background-color: rgba(255, 255, 255, 0.3); 
 }
